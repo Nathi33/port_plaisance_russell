@@ -12,7 +12,7 @@ router.post("/add", catwayService.add);
 // Route pour mettre à jour un catway
 router.put("/:id", catwayService.update);
 // Route pour mettre à jour partiellement un catway
-router.patch("/:id", catwayService.update);
+router.patch("/:id", catwayService.partialUpdate);
 // Route pour supprimer un catway
 router.delete("/:id", catwayService.delete);
 
