@@ -1,7 +1,6 @@
 const mongoose = require("mongoose");
 
 const clientOptions = {
-  useNewUrlParser: true,
   dbName: "api_russell",
 };
 
