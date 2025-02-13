@@ -6,6 +6,81 @@
     <title>Tableau de bord</title>
   </head>
   <body>
-    <h2>Tableau de bord</h2>
+    <h1>Tableau de bord</h1>
+
+    <div style="display: flex; margin-bottom: 3rem">
+      <form method="POST" action="/users">
+        <fieldset style="width: 38rem; margin-right: 3rem">
+          <br />
+          <legend style="font-weight: bold">UTILISATEURS</legend>
+          <fieldset>
+            <legend>Créer un membre</legend>
+            <a href="/registration">Formulaire d'inscription</a>
+          </fieldset>
+          <br />
+          <fieldset>
+            <legend>Mettre à jour les informations d'un membre</legend>
+            <a href="/update_member">Formulaire de mise à jour de la fiche</a>
+          </fieldset>
+          <br />
+          <fieldset>
+            <legend>Supprimer un membre</legend>
+            <a href="/delete_member">Formulaire de suppression d'un membre</a>
+          </fieldset>
+          <br />
+        </fieldset>
+      </form>
+      <form method="POST" action="/reservations">
+        <fieldset style="width: 38rem">
+          <br />
+          <legend style="font-weight: bold">RESERVATIONS</legend>
+          <fieldset>
+            <legend>Liste des réservations</legend>
+            <a href="/list_reservations">Nos réservations</a>
+          </fieldset>
+          <br />
+          <fieldset>
+            <legend>Faire une réservation</legend>
+            <a href="/create_reservations">Formulaire de réservation</a>
+          </fieldset>
+          <br />
+          <fieldset>
+            <legend>Supprimer une réservation</legend>
+            <a href="/delete_reservations"
+              >Formulaire d'annulation de réservation</a
+            >
+          </fieldset>
+          <br />
+        </fieldset>
+      </form>
+    </div>
+    <form method="POST" action="/catways">
+      <fieldset style="width: 38rem; margin-right: 3rem">
+        <br />
+        <legend style="font-weight: bold">CATWAYS</legend>
+        <fieldset>
+          <legend>Liste des catways</legend>
+          <a href="/list_catways">Nos catways</a>
+        </fieldset>
+        <br />
+        <fieldset>
+          <legend>Enregistrer un catway</legend>
+          <a href="/create_catway">Formulaire de création</a>
+        </fieldset>
+        <br />
+        <fieldset>
+          <legend>Modifier un catway</legend>
+          <a href="/update_catway"
+            >Formulaire pour modifier la description du catway</a
+          >
+        </fieldset>
+        <br />
+        <fieldset>
+          <legend>Supprimer un catway</legend>
+          <a href="/delete_catway">Formulaire de suppression d'un catway</a>
+        </fieldset>
+        <br />
+      </fieldset>
+    </form>
   </body>
 </html>
