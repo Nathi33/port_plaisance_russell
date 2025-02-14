@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Créer un catway</title>
+  </head>
+  <body>
+    <button><a href="/dashboard">Retour</a></button>
+    <h1>Enregistrer un nouveau catway</h1>
+
+    <% if (successMessage) { %>
+    <p id="successMessage" style="color: green"><%= successMessage %></p>
+    <% } %> <% if (errorMessage) { %>
+    <p id="errorMessage" style="color: red"><%= errorMessage %></p>
+    <% } %>
+
+    <form action="/catways/add" method="POST">
+      <div>
+        <label for="catwayNumber">Numéro de pont :</label>
+        <input type="text" id="catwayNumber" name="catwayNumber" required />
+      </div>
+      <br />
+      <div>
+        <label for="type">Type :</label>
+        <select id="type" name="type" required>
+          <option value="long">Long</option>
+          <option value="short">Short</option>
+        </select>
+      </div>
+      <br />
+      <div>
+        <label for="catwayState" style="display: block; margin-bottom: 1rem"
+          >Description :</label
+        >
+        <textarea
+          id="catwayState"
+          name="catwayState"
+          rows="6"
+          cols="50"
+          required
+        ></textarea>
+      </div>
+      <br />
+      <button type="submit">Enregistrer</button>
+    </form>
+
+    <script>
+      // Fonction pour masquer les messages après 3 secondes
+      setTimeout(() => {
+        const successMsg = document.getElementById("successMessage");
+        const errorMsg = document.getElementById("errorMessage");
+
+        if (successMsg) {
+          successMsg.style.transition = "opacity 0.5s";
+          successMsg.style.opacity = "0";
+          setTimeout(() => successMsg.remove(), 500);
+        }
+
+        if (errorMsg) {
+          errorMsg.style.transition = "opacity 0.5s";
+          errorMsg.style.opacity = "0";
+          setTimeout(() => errorMsg.remove(), 500);
+        }
+      }, 3000);
+    </script>
+  </body>
+</html>

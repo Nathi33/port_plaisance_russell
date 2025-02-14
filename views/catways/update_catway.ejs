@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Modifier description catway</title>
+  </head>
+  <body>
+    <button><a href="/dashboard">Retour</a></button>
+    <h1>Mettre à jour la description d'un catway</h1>
+  
+    <form action="/catways/update_catway/<%= catway._id %>?_method=PUT" method="POST">
+      <input type="hidden" name="_method" value="PUT" />
+      <div>
+        <label for="catwayNumber">Numéro de pont :</label>
+        <input type="text" id="catwayNumber" name="catwayNumber" value="<%= catway.catwayNumber %>" disabled />
+      </div>
+      <br />
+      <div>
+        <label for="type">Type :</label>
+        <select id="type" name="type" disabled>
+          <option value="long" <%= catway.type === "long" ? "selected" : "" %>>Long</option>
+          <option value="short" <%= catway.type === "short" ? "selected" : "" %>>Short</option>
+        </select>
+      </div>
+      <br />
+      <div>
+        <label for="catwayState" style="display: block; margin-bottom: 1rem">Description :</label>
+        <textarea id="catwayState" name="catwayState" rows="6" cols="50" required><%= catway.catwayState %></textarea>
+      </div>
+      <br />
+      <button type="submit">Mettre à jour</button>
+    </form>
+  </body>
+</html>
