@@ -2,13 +2,16 @@ const express = require("express");
 const cookieParser = require("cookie-parser");
 const logger = require("morgan");
 const cors = require("cors");
-const path = require("path");
 const session = require("express-session");
+const flash = require("connect-flash");
+const methodOverride = require("method-override");
 
+const path = require("path");
 const indexRouter = require("./routes/index");
 const authRouter = require("./routes/auth");
 const dashboardRouter = require("./routes/dashboard");
 const mongodb = require("./db/mongo");
+const catwayRouter = require("./routes/catways");
 
 const User = require("./models/user");
 
@@ -24,7 +27,9 @@ app.use(
     origin: "*",
   })
 );
+
 app.use(logger("dev"));
+app.use(methodOverride("_method"));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
@@ -42,6 +47,16 @@ app.use(
   })
 );
 
+// Configuration du middleware flash
+app.use(flash());
+
+// Middleware pour rendre les messages flash accessibles dans les templates
+app.use((req, res, next) => {
+  res.locals.successMessage = req.flash("success");
+  res.locals.errorMessage = req.flash("error");
+  next();
+});
+
 // Configuration de la route d'authentification
 app.use("/auth", authRouter);
 
@@ -50,6 +65,9 @@ app.use("/", indexRouter);
 
 // Configuration de la route pour accéder au dashboard
 app.use("/dashboard", dashboardRouter);
+
+// Configuration de la route pour accéder aux catways
+app.use("/catways", catwayRouter);
 
 // Retour en cas de requête sur une route inexistante
 app.use(function (req, res, next) {
