@@ -11,7 +11,8 @@ const indexRouter = require("./routes/index");
 const authRouter = require("./routes/auth");
 const dashboardRouter = require("./routes/dashboard");
 const mongodb = require("./db/mongo");
-const catwayRouter = require("./routes/catways");
+const catwayRoutes = require("./routes/catways");
+const reservationRoutes = require("./routes/reservations");
 
 const User = require("./models/user");
 
@@ -67,7 +68,10 @@ app.use("/", indexRouter);
 app.use("/dashboard", dashboardRouter);
 
 // Configuration de la route pour accéder aux catways
-app.use("/catways", catwayRouter);
+app.use("/catways", catwayRoutes);
+
+// Configuration de la route pour accéder aux réservations
+app.use("/catways", reservationRoutes);
 
 // Retour en cas de requête sur une route inexistante
 app.use(function (req, res, next) {

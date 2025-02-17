@@ -8,5 +8,61 @@
   <body>
     <button><a href="/dashboard">Retour</a></button>
     <h1>Faire une réservation</h1>
+
+    <form id="reservationForm" method="POST">
+      <div>
+        <label for="catwayNumber">Numéro de pont :</label>
+        <select id="catwayNumber" name="catwayNumber" required>
+          <option value="">-- Sélectionner un pont --</option>
+          <% availableCatways.forEach(catway => { %>
+          <option value="<%= catway._id %>">
+            <%= catway.catwayNumber %> - <%= catway.type %>
+          </option>
+          <% }); %>
+        </select>
+      </div>
+      <br />
+      <div>
+        <label for="clientName">Nom du client :</label>
+        <input type="text" id="clientName" name="clientName" required />
+      </div>
+      <br />
+      <div>
+        <label for="boatName">Nom du bateau :</label>
+        <input type="text" id="boatName" name="boatName" required />
+      </div>
+      <br />
+      <div>
+        <label for="checkIn">Date d'arrivée :</label>
+        <input type="date" id="checkIn" name="checkIn" required />
+      </div>
+      <br />
+      <div>
+        <label for="checkOut">Date de départ :</label>
+        <input type="date" id="checkOut" name="checkOut" required />
+      </div>
+      <br />
+      <button type="submit">Enregistrer</button>
+    </form>
+
+    <script>
+      document
+        .getElementById("reservationForm")
+        .addEventListener("submit", function (event) {
+          // Empêche l'envoi automatique du formulaire
+          event.preventDefault();
+          // Récupère l'ID du catway sélectionné
+          const selectedCatwayId =
+            document.getElementById("catwayNumber").value;
+          if (!selectedCatwayId) {
+            alert("Veuillez sélectionner un pont !");
+            return;
+          }
+          // Définit automatiquement l'action du formulaire
+          this.action = `/reservations/${selectedCatwayId}/reservations`;
+          //Soumission du formulaire après avoir défini l'action
+          this.submit();
+        });
+    </script>
   </body>
 </html>
