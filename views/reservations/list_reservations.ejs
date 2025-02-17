@@ -6,7 +6,66 @@
     <title>Liste des réservations</title>
   </head>
   <body>
-    <button><a href="/dashboard">Retour</a></button>
-    <h1>Liste des réservations</h1>
+    <button><a href="/dashboard">Retour</a></button><br /><br />
+    <h1 style="padding-bottom: 3rem">Liste des réservations</h1>
+
+    <% if (successMessage) { %>
+    <p id="successMessage" style="color: green"><%= successMessage %></p>
+    <% } %> <% if (errorMessage) { %>
+    <p id="errorMessage" style="color: red"><%= errorMessage %></p>
+    <% } %> <% if (reservations.length > 0) { %>
+    <table>
+      <thead>
+        <tr>
+          <th style="width: 20rem; padding-bottom: 2rem">Numéro de pont</th>
+          <th style="width: 20rem; padding-bottom: 2rem">Nom du client</th>
+          <th style="width: 20rem; padding-bottom: 2rem">Nom du bateau</th>
+          <th style="width: 20rem; padding-bottom: 2rem"></th>
+          <th style="width: 20rem; padding-bottom: 2rem"></th>
+        </tr>
+      </thead>
+      <tbody style="text-align: center">
+        <% reservations.forEach(reservation => { %>
+        <tr>
+          <td><%= reservation.catwayNumber %></td>
+          <td><%= reservation.clientName %></td>
+          <td><%= reservation.boatName %></td>
+          <td>
+            <a href="/reservations/details_reservation/<%= reservation._id %>"
+              >Plus d'infos</a
+            >
+          </td>
+          <td>
+            <a href="/reservations/delete_reservations/<%= reservation.id %>"
+              >Supprimer</a
+            >
+          </td>
+        </tr>
+        <% }); %>
+      </tbody>
+    </table>
+    <% } else { %>
+    <p>Aucune réservation pour le moment.</p>
+    <% } %>
+
+    <script>
+      // Fonction pour masquer les messages après 3 secondes
+      setTimeout(() => {
+        const successMsg = document.getElementById("successMessage");
+        const errorMsg = document.getElementById("errorMessage");
+
+        if (successMsg) {
+          successMsg.style.transition = "opacity 0.5s";
+          successMsg.style.opacity = "0";
+          setTimeout(() => successMsg.remove(), 500);
+        }
+
+        if (errorMsg) {
+          errorMsg.style.transition = "opacity 0.5s";
+          errorMsg.style.opacity = "0";
+          setTimeout(() => errorMsg.remove(), 500);
+        }
+      }, 3000);
+    </script>
   </body>
 </html>

@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Infos réservation</title>
+  </head>
+  <body>
+    <button><a href="/dashboard">Retour</a></button>
+    <h1>Détails de la réservation</h1>
+
+    <p><strong>Numéro de pont : </strong><%= reservation.catwayNumber %></p>
+    <p><strong>Nom du client : </strong><%= reservation.clientName %></p>
+    <p><strong>Nom du bateau : </strong><%= reservation.boatName %></p>
+    <p>
+      <strong>Date d'arrivée : </strong><%=
+      reservation.checkIn.toLocaleDateString("fr-FR") %>
+    </p>
+    <p>
+      <strong>Date de départ : </strong><%=
+      reservation.checkOut.toLocaleDateString("fr-FR") %>
+    </p>
+    <button>
+      <a href="/reservations/delete_reservations/<%= reservation.id %>"
+        >Supprimer</a
+      >
+    </button>
+  </body>
+</html>

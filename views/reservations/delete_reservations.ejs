@@ -8,5 +8,15 @@
   <body>
     <button><a href="/dashboard">Retour</a></button>
     <h1>Annuler une réservation</h1>
+
+    <p>Êtes-vous sûr de vouloir supprimer cette réservation ?</p>
+
+    <form
+      action="/catways/<%= reservation.catwayNumber %>/reservations/<%= reservation._id %>?_method=DELETE"
+      method="POST"
+    >
+      <input type="hidden" name="_method" value="DELETE" />
+      <button type="submit">Supprimer</button>
+    </form>
   </body>
 </html>

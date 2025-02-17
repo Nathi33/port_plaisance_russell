@@ -4,7 +4,7 @@ const Schema = mongoose.Schema;
 // Création du schéma Reservation
 const Reservation = new Schema({
   catwayNumber: {
-    type: String,
+    type: Number,
     trim: true,
     required: [true, "Le numéro de pont réservé est requis"],
   },

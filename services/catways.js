@@ -90,7 +90,7 @@ exports.delete = async (req, res, next) => {
   try {
     let deletedCatway = await Catway.findByIdAndDelete(id);
     if (deletedCatway) {
-      req.flash("success", "Le catway a été suprimé avec succès !");
+      req.flash("success", "Le catway a été supprimé avec succès !");
       return res.redirect("/list_catways");
     }
     return res.status(404).json({ error: "catway_not_found" });

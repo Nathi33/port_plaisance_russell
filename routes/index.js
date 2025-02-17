@@ -7,6 +7,7 @@ const reservationRoute = require("../routes/reservations");
 const authRoute = require("../routes/auth");
 
 const Catway = require("../models/catway");
+const Reservation = require("../models/reservation");
 
 // Route pour la page d'accueil
 router.get("/", async (req, res) => {
@@ -26,19 +27,75 @@ router.get("/delete_member", async (req, res) => {
 
 // Route pour les pages de réservations
 router.get("/list_reservations", async (req, res) => {
-  res.render("reservations/list_reservations", {
-    title: "Liste des réservations",
-  });
+  try {
+    const reservations = await Reservation.find(); // Récupère toutes les réservations
+    res.render("reservations/list_reservations", {
+      title: "Liste des réservations",
+      reservations: reservations, // Envoie les données à la vue
+    });
+  } catch (err) {
+    res
+      .status(500)
+      .send("Erreur lors de la récupération de la liste des réservations");
+  }
 });
+
 router.get("/create_reservations", async (req, res) => {
-  res.render("reservations/create_reservations", {
-    title: "Faire une réservation",
-  });
+  try {
+    // Récupère les catways disponibles déjà réservés
+    const reservedCatways = await Reservation.distinct("catwayNumber");
+    // Récupère les catways non réservés
+    const availableCatways = await Catway.find(
+      { catwayNumber: { $nin: reservedCatways } },
+      "catwayNumber type"
+    );
+    res.render("reservations/create_reservations", {
+      title: "Faire une réservation",
+      availableCatways, // Envoie les données à la vue
+    });
+  } catch (error) {
+    console.error(
+      "Erreur lors de la récupération des catways disponibles",
+      error
+    );
+    res
+      .status(500)
+      .send("Erreur lors de la récupération des catways disponibles");
+  }
 });
-router.get("/delete_reservations", async (req, res) => {
-  res.render("reservations/delete_reservations", {
-    title: "Annuler une réservation",
-  });
+
+router.get("/reservations/delete_reservations/:id", async (req, res) => {
+  const reservationId = req.params.id;
+  try {
+    const reservation = await Reservation.findById(reservationId);
+    if (!reservation) {
+      return res.status(404).send("Réservation non trouvée");
+    }
+    res.render("reservations/delete_reservations", {
+      title: "Annuler une réservation",
+      reservation: reservation,
+    });
+  } catch (error) {
+    console.error("Erreur lors de la récupération de la réservation", error);
+    return res
+      .status(500)
+      .send("Erreur lors de la récupération de la réservation");
+  }
+});
+
+router.get("/reservations/details_reservation/:id", async (req, res) => {
+  try {
+    const reservation = await Reservation.findById(req.params.id); // Récupère le catway par son id
+    if (!reservation) {
+      return res.status(404).send("Réservation non trouvée");
+    }
+    res.render("reservations/details_reservation", {
+      title: "Détails de la réservation",
+      reservation: reservation,
+    });
+  } catch (err) {
+    res.status(500).send("Erreur lors de la récupération de la réservation");
+  }
 });
 
 // Route pour les pages des catways
