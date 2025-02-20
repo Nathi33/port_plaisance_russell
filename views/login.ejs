@@ -7,11 +7,95 @@
   </head>
   <body>
     <h2>Connexion</h2>
-    <form action="/login" method="post">
+    <form id="loginForm">
       <label for="email">Adresse email</label>
       <input type="email" id="email" name="email" required />
       <label for="password">Mot de passe</label>
       <input type="password" id="password" name="password" required />
       <button type="submit">Se connecter</button>
+    </form>
+
+    <script>
+      document
+        .getElementById("loginForm")
+        .addEventListener("submit", async (event) => {
+          event.preventDefault();
+          console.log("Formulaire soumis");
+
+          const email = document.getElementById("email").value;
+          const password = document.getElementById("password").value;
+
+          try {
+            const response = await fetch("/auth", {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({ email, password }),
+              credentials: "include", // Inclut les cookies dans la requête
+            });
+
+            if (response.ok) {
+              // Si le serveur envoie le token dans un cookie, pas besoin de le stocker dans le localStorage
+              console.log("Authentification réussie !");
+              window.location.href = "/dashboard"; // Redirige vers la page dashboard
+            } else {
+              const data = await response.json();
+              console.error("Échec de l'authentification :", data.error);
+              alert("Adresse email ou mot de passe incorrect.");
+            }
+          } catch (error) {
+            console.error("Erreur lors de la connexion :", error);
+          }
+        });
+
+      // Vérifier la présence du token et tenter l'accès au dashboard
+      async function checkAuth() {
+        const token = getCookie("jwtToken"); // Récupère le token stocké dans un cookie
+
+        if (token) {
+          try {
+            const response = await fetch("/dashboard", {
+              method: "GET",
+              headers: { Authorization: `Bearer ${token}` }, // Utilise lle token dans l'en-tête
+            });
+
+            if (response.ok) {
+              window.location.href = "/dashboard";
+            } else {
+              console.error("Accès refusé :", await response.json());
+              alert("Votre session a expiré. Veuillez vous reconnecter.");
+              removeCookie("jwtToken"); // Supprime le cookie si la session expire
+            }
+          } catch (error) {
+            console.error("Erreur lors de la vérification du token :", error);
+          }
+        } else {
+          console.warn("Aucun token trouvé, accès refusé.");
+        }
+      }
+
+      // Vérifie l'authentification à chaque chargement de la page
+      checkAuth();
+
+      // Fonction pour récupérer un cookiez par son nom
+      function getCookie(name) {
+        const nameEq = name + "=";
+        const ca = document.cookie.split(";");
+        for (let i = 0; i < ca.length; i++) {
+          let c = ca[i];
+          while (c.charAt(0) === " ") {
+            c = c.substring(1, c.length);
+          }
+          if (c.indexOf(nameEq) === 0) {
+            return c.substring(nameEq.length, c.length);
+          }
+        }
+        return null;
+      }
+
+      // Fonction pour supprimer un cookie
+      function removeCookie(name) {
+        document.cookie = name + "=; Max-Age=-99999999;"; // Expirer immédiatement
+      }
+    </script>
   </body>
 </html>

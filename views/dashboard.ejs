@@ -6,7 +6,17 @@
     <title>Tableau de bord</title>
   </head>
   <body>
-    <h1>Tableau de bord</h1>
+    <h1>
+      Tableau de bord de : <%= user.firstname.charAt(0).toUpperCase() +
+      user.firstname.slice(1).toLowerCase() %> <%= user.name.toUpperCase() %>
+    </h1>
+    <button onclick="logout()">Déconnexion</button><br /><br />
+
+    <% if (successMessage) { %>
+    <p id="successMessage" style="color: green"><%= successMessage %></p>
+    <% } %> <% if (errorMessage) { %>
+    <p id="errorMessage" style="color: red"><%= errorMessage %></p>
+    <% } %>
 
     <div style="display: flex; margin-bottom: 3rem">
       <form method="POST" action="/users">
@@ -19,13 +29,13 @@
           </fieldset>
           <br />
           <fieldset>
-            <legend>Mettre à jour les informations d'un membre</legend>
-            <a href="/update_member">Formulaire de mise à jour de la fiche</a>
+            <legend>Mettre à jour vos informations utilisateur</legend>
+            <a href="/update/<%= user._id %>">Formulaire de mise à jour</a>
           </fieldset>
           <br />
           <fieldset>
-            <legend>Supprimer un membre</legend>
-            <a href="/delete_member">Formulaire de suppression d'un membre</a>
+            <legend>Supprimer son profil utilisateur</legend>
+            <a href="/delete_member">Formulaire de suppression</a>
           </fieldset>
           <br />
         </fieldset>
@@ -70,5 +80,37 @@
         <br />
       </fieldset>
     </form>
+
+    <script>
+      // Fonction pour masquer les messages après 3 secondes
+      setTimeout(() => {
+        const successMsg = document.getElementById("successMessage");
+        const errorMsg = document.getElementById("errorMessage");
+
+        if (successMsg) {
+          successMsg.style.transition = "opacity 0.5s";
+          successMsg.style.opacity = "0";
+          setTimeout(() => successMsg.remove(), 500);
+        }
+
+        if (errorMsg) {
+          errorMsg.style.transition = "opacity 0.5s";
+          errorMsg.style.opacity = "0";
+          setTimeout(() => errorMsg.remove(), 500);
+        }
+      }, 3000);
+
+      async function logout() {
+        try {
+          await fetch("/logout", {
+            method: "POST",
+            credentials: "include", // Pour inclure le cookie dans la requête
+          });
+          window.location.href = "/login"; // Rediriger après la déconnexion
+        } catch (error) {
+          console.error("Erreur lors de la déconnexion :", error);
+        }
+      }
+    </script>
   </body>
 </html>

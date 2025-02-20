@@ -13,8 +13,7 @@ const dashboardRouter = require("./routes/dashboard");
 const mongodb = require("./db/mongo");
 const catwayRoutes = require("./routes/catways");
 const reservationRoutes = require("./routes/reservations");
-
-const User = require("./models/user");
+const usersRoutes = require("./routes/users");
 
 // Initialisation de la connexion à la base de données MongoDB
 mongodb.initClientDbConnection();
@@ -24,15 +23,16 @@ const app = express();
 // Configuration des CORS en acceptant toutes les origines et on récupère le token d'authentification côté client
 app.use(
   cors({
-    exposedHeaders: ["Authorization"],
-    origin: "*",
+    origin: "http://localhost:3000",
+    credentials: true, // Autorise les cookies et le header Authorization
+    exposedHeaders: ["Authorization"], // Expose le header Authorization
   })
 );
 
 app.use(logger("dev"));
 app.use(methodOverride("_method"));
 app.use(express.json());
-app.use(express.urlencoded({ extended: false }));
+app.use(express.urlencoded({ extended: true })); // Permet de récupérer les données d'un formulaire
 app.use(cookieParser());
 
 // Ajout du répertoire views
@@ -72,6 +72,9 @@ app.use("/catways", catwayRoutes);
 
 // Configuration de la route pour accéder aux réservations
 app.use("/catways", reservationRoutes);
+
+// Configuration de la route pour accéder aux utilisateurs
+app.use("/users", usersRoutes);
 
 // Retour en cas de requête sur une route inexistante
 app.use(function (req, res, next) {

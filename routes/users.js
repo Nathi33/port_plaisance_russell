@@ -3,16 +3,15 @@ const router = express.Router();
 
 const service = require("../services/users");
 
-const private = require("../middlewares/private");
+const auth = require("../middlewares/auth");
 
-// Route pour lire les informations d'un utilisateur
-router.get("/:id", private.checkJWT, service.getById);
-// Route pour ajouter un utilisateur
-router.put("/add", service.add);
-// Route pour modifier un utilisateur
-router.patch("/:id", private.checkJWT, service.update);
-// Route pour supprimer un utilisateur
-router.delete("/:id", private.checkJWT, service.delete);
+// Routes protégées avec JWT
+router.get("/:id", auth, service.getById); // Route pour lire les informations d'un utilisateur
+router.patch("/:id", auth, service.update); // Route pour modifier un utilisateur
+router.delete("/:id", auth, service.delete); // Route pour supprimer un utilisateur
+
+// Route publique pour ajouter un utilisateur
+router.post("/add", service.add);
 
 // Route pour l'authentification
 router.post("/authenticate", service.authenticate);

@@ -3,6 +3,8 @@ const router = express.Router();
 
 const catwayService = require("../services/catways");
 
+const auth = require("../middlewares/auth");
+
 // Route pour lire les informations de tous les catways
 router.get("/", catwayService.getAll);
 
@@ -10,7 +12,7 @@ router.get("/", catwayService.getAll);
 router.get("/:id", catwayService.getById);
 
 // Route pour ajouter un catway
-router.post("/add", catwayService.add);
+router.post("/add", auth, catwayService.add);
 
 // Route pour mettre à jour un catway
 router.put("/update_catway/:id", catwayService.update);
@@ -19,6 +21,6 @@ router.put("/update_catway/:id", catwayService.update);
 router.patch("/:id", catwayService.partialUpdate);
 
 // Route pour supprimer un catway
-router.delete("/:id", catwayService.delete);
+router.delete("/:id", auth, catwayService.delete);
 
 module.exports = router;
