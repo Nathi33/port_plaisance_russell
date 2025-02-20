@@ -3,10 +3,21 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Supprimer un membre</title>
+    <title>Supprimer un profil</title>
   </head>
   <body>
     <button><a href="/dashboard">Retour</a></button>
-    <h1>Supprimer un membre</h1>
+    <h1>Suppression de votre profil utilisateur</h1>
+
+    <p>
+      Êtes-vous sûr de vouloir supprimer votre profil utilisateur : <%=
+      user.firstname.charAt(0).toUpperCase() +
+      user.firstname.slice(1).toLowerCase() %> <%= user.name.toUpperCase() %> ?
+    </p>
+
+    <form action="/users/<%= user._id %>?_method=DELETE" method="POST">
+      <input type="hidden" name="_method" value="DELETE" />
+      <button type="submit">Supprimer</button>
+    </form>
   </body>
 </html>

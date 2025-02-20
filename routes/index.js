@@ -8,6 +8,9 @@ const authRoute = require("../routes/auth");
 
 const Catway = require("../models/catway");
 const Reservation = require("../models/reservation");
+const User = require("../models/user");
+
+const auth = require("../middlewares/auth");
 
 // Route pour la page d'accueil
 router.get("/", async (req, res) => {
@@ -18,11 +21,42 @@ router.get("/", async (req, res) => {
 router.get("/registration", async (req, res) => {
   res.render("users/registration", { title: "Inscription" });
 });
-router.get("/update_member", async (req, res) => {
-  res.render("users/update_member", { title: "Mise à jour d'un membre" });
+
+router.get("/update/:id", async (req, res) => {
+  try {
+    const user = await User.findById(req.params.id); // Récupère le user par son id
+    if (!user) {
+      req.flash("errorMessage", "Utilisateur introuvable !");
+      return res.redirect("/dashboard");
+    }
+    res.render("users/update_member", {
+      user,
+      successMessage: req.flash("success"),
+      errorMessage: req.flash("error"),
+    });
+  } catch (error) {
+    console.error("Erreur:", error);
+    req.flash("errorMessage", "Erreur lors du chargement des informations !");
+    res.redirect("/dashboard");
+  }
 });
-router.get("/delete_member", async (req, res) => {
-  res.render("users/delete_member", { title: "Suppression d'un membre" });
+
+router.get("/delete_member", auth, async (req, res) => {
+  try {
+    const user = await User.findById(req.user.userId).select("-password"); // Récupère l'utilisateur actuel
+    if (!user) {
+      req.flash("errorMessage", "Utilisateur non trouvé !");
+      return res.redirect("/dashboard");
+    }
+    res.render("users/delete_member", {
+      title: "Suppression d'un membre",
+      user,
+    }); // Passe l'utilisateur à la vue
+  } catch (error) {
+    console.error("Erreur lors de la récupération de l'utilisateur", error);
+    req.flash("errorMessage", "Erreur serveur !");
+    return res.redirect("/dashboard");
+  }
 });
 
 // Route pour les pages de réservations
@@ -134,7 +168,7 @@ router.get("/catways/update_catway/:id", async (req, res) => {
   }
 });
 
-router.get("/catways/delete_catway/:id", async (req, res) => {
+router.get("/catways/delete_catway/:id", auth, async (req, res) => {
   try {
     const catway = await Catway.findById(req.params.id); // Récupère le catway par son id
     if (!catway) {
