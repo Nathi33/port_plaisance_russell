@@ -18,7 +18,7 @@ router.get("/", async (req, res) => {
 });
 
 // Route pour les pages des membres
-router.get("/registration", async (req, res) => {
+router.get("/registration", auth, async (req, res) => {
   res.render("users/registration", { title: "Inscription" });
 });
 
@@ -60,7 +60,7 @@ router.get("/delete_member", auth, async (req, res) => {
 });
 
 // Route pour les pages de réservations
-router.get("/list_reservations", async (req, res) => {
+router.get("/list_reservations", auth, async (req, res) => {
   try {
     const reservations = await Reservation.find(); // Récupère toutes les réservations
     res.render("reservations/list_reservations", {
@@ -74,7 +74,7 @@ router.get("/list_reservations", async (req, res) => {
   }
 });
 
-router.get("/create_reservations", async (req, res) => {
+router.get("/create_reservations", auth, async (req, res) => {
   try {
     // Récupère les catways disponibles déjà réservés
     const reservedCatways = await Reservation.distinct("catwayNumber");
@@ -98,7 +98,7 @@ router.get("/create_reservations", async (req, res) => {
   }
 });
 
-router.get("/reservations/delete_reservations/:id", async (req, res) => {
+router.get("/reservations/delete_reservations/:id", auth, async (req, res) => {
   const reservationId = req.params.id;
   try {
     const reservation = await Reservation.findById(reservationId);
@@ -133,7 +133,7 @@ router.get("/reservations/details_reservation/:id", async (req, res) => {
 });
 
 // Route pour les pages des catways
-router.get("/list_catways", async (req, res) => {
+router.get("/list_catways", auth, async (req, res) => {
   try {
     const catways = await Catway.find(); // Récupère tous les catways
     res.render("catways/list_catways", {
@@ -147,7 +147,7 @@ router.get("/list_catways", async (req, res) => {
   }
 });
 
-router.get("/create_catway", async (req, res) => {
+router.get("/create_catway", auth, async (req, res) => {
   res.render("catways/create_catway", {
     title: "Enregistrer un catway",
   });
