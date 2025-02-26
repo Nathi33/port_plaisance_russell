@@ -119,14 +119,28 @@ router.get("/reservations/delete_reservations/:id", auth, async (req, res) => {
 
 router.get("/reservations/details_reservation/:id", async (req, res) => {
   try {
+    console.log("Requête reçue avec ID :", req.params.id);
     const reservation = await Reservation.findById(req.params.id); // Récupère le catway par son id
+    console.log("Réservation trouvée :", reservation);
     if (!reservation) {
+      console.log("Réservation non trouvée, envoi de 404");
       return res.status(404).send("Réservation non trouvée");
     }
-    res.render("reservations/details_reservation", {
-      title: "Détails de la réservation",
-      reservation: reservation,
-    });
+
+    // Convertir `checkIn` et `checkOut` en objets Date si ce sont des chaînes
+    if (reservation.checkIn) {
+      reservation.checkIn = new Date(reservation.checkIn);
+    }
+    if (reservation.checkOut) {
+      reservation.checkOut = new Date(reservation.checkOut);
+    }
+    console.log("Réservation envoyée à la vue :", reservation);
+    res.render("reservations/details_reservation", { reservation });
+
+    // res.render("reservations/details_reservation", {
+    //   title: "Détails de la réservation",
+    //   reservation: reservation,
+    // });
   } catch (err) {
     res.status(500).send("Erreur lors de la récupération de la réservation");
   }

@@ -60,6 +60,7 @@ exports.add = async (req, res, next) => {
     };
     let reservation = await Reservations.create(temp);
     req.flash("success", "La réservation a été créée avec succès !");
+    res.status(302);
     return res.redirect("/list_reservations");
   } catch (error) {
     console.error("Erreur lors de la création de la réservation", error);
@@ -67,6 +68,7 @@ exports.add = async (req, res, next) => {
       "error",
       "Une erreur s'est produite lors de la création de la réservation"
     );
+    res.status(500);
     return res.redirect("/create_reservation");
   }
 };
@@ -85,7 +87,7 @@ exports.delete = async (req, res, next) => {
 
     await Reservations.findByIdAndDelete(reservationId);
     req.flash("success", "Réservation supprimée avec succès !");
-    return res.redirect("/list_reservations");
+    res.status(302).redirect("/list_reservations");
   } catch (error) {
     console.error("Erreur suppression réservation", error);
     req.flash("error", "Erreur lors de la suppression de la réservation");
