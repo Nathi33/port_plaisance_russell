@@ -93,10 +93,14 @@ exports.delete = async (req, res, next) => {
       req.flash("success", "Le catway a été supprimé avec succès !");
       return res.redirect("/list_catways");
     }
+    // Si le catway n'est pas trouvé
     return res.status(404).json({ error: "catway_not_found" });
   } catch (error) {
     console.error("Erreur lors de la suppression : ", error);
-    req.flash("error", "Une erreur s'est produite lors de l'ajout du catway");
+    req.flash(
+      "error",
+      "Une erreur s'est produite lors de la suppression du catway"
+    );
     return res.redirect("/delete_catway");
   }
 };

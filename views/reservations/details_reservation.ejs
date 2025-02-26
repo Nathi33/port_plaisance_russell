@@ -13,13 +13,15 @@
     <p><strong>Nom du client : </strong><%= reservation.clientName %></p>
     <p><strong>Nom du bateau : </strong><%= reservation.boatName %></p>
     <p>
-      <strong>Date d'arrivée : </strong><%=
-      reservation.checkIn.toLocaleDateString("fr-FR") %>
+      <strong>Date d'arrivée : </strong><%= reservation.checkIn ? new
+      Date(reservation.checkIn).toLocaleDateString("fr-FR") : "Non spécifiée" %>
     </p>
     <p>
-      <strong>Date de départ : </strong><%=
-      reservation.checkOut.toLocaleDateString("fr-FR") %>
+      <strong>Date de départ : </strong><%= reservation.checkOut ? new
+      Date(reservation.checkOut).toLocaleDateString("fr-FR") : "Non spécifiée"
+      %>
     </p>
+
     <button>
       <a href="/reservations/delete_reservations/<%= reservation.id %>"
         >Supprimer</a
