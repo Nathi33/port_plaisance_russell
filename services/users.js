@@ -3,7 +3,14 @@ const jwt = require("jsonwebtoken");
 const User = require("../models/user");
 const SECRET_KEY = process.env.SECRET_KEY;
 
-// Callback servant à ajouter un user avec son id
+/**
+ * @function
+ * @description Récupère un utilisateur par son ID.
+ * @route GET /users/:id
+ * @param {string} req.params.id - L'ID de l'utilisateur à récupérer.
+ * @returns {Object} Détails de l'utilisateur si trouvé.
+ * @returns {string} Message d'erreur si l'utilisateur n'est pas trouvé.
+ */
 exports.getById = async (req, res, next) => {
   const id = req.params.id;
   try {
@@ -17,7 +24,17 @@ exports.getById = async (req, res, next) => {
   }
 };
 
-// Callback servant à ajouter un user
+/**
+ * @function
+ * @description Ajoute un nouvel utilisateur.
+ * @route POST /users
+ * @param {Object} req.body - Données de l'utilisateur à ajouter.
+ * @param {string} req.body.name - Le nom de l'utilisateur.
+ * @param {string} req.body.firstname - Le prénom de l'utilisateur.
+ * @param {string} req.body.email - L'email de l'utilisateur.
+ * @param {string} req.body.password - Le mot de passe de l'utilisateur.
+ * @returns {Object} Message de succès ou d'erreur après l'ajout.
+ */
 exports.add = async (req, res, next) => {
   try {
     const { name, firstname, email, password } = req.body;
@@ -43,7 +60,18 @@ exports.add = async (req, res, next) => {
   }
 };
 
-// Callback servant à modifier un user
+/**
+ * @function
+ * @description Modifie un utilisateur existant.
+ * @route PUT /users/:id
+ * @param {string} req.params.id - L'ID de l'utilisateur à modifier.
+ * @param {Object} req.body - Données de l'utilisateur à mettre à jour.
+ * @param {string} req.body.name - Le nom de l'utilisateur.
+ * @param {string} req.body.firstname - Le prénom de l'utilisateur.
+ * @param {string} req.body.email - L'email de l'utilisateur.
+ * @param {string} req.body.password - Le mot de passe de l'utilisateur.
+ * @returns {Object} Message de succès ou d'erreur après la mise à jour.
+ */
 exports.update = async (req, res, next) => {
   const id = req.params.id;
   const temp = {
@@ -72,9 +100,14 @@ exports.update = async (req, res, next) => {
   }
 };
 
-// Callback servant à supprimer un user
+/**
+ * @function
+ * @description Supprime un utilisateur.
+ * @route DELETE /users/:id
+ * @param {string} req.params.id - L'ID de l'utilisateur à supprimer.
+ * @returns {Object} Message de succès ou d'erreur après la suppression.
+ */
 exports.delete = async (req, res, next) => {
-  // Récupère l'id de l'utilisateur connecté
   const id = req.params.id;
   // Vérifie que l'utilisateur connecté est bien celui qui tente de supprimer le profil
   if (req.user.userId !== id) {
@@ -99,10 +132,18 @@ exports.delete = async (req, res, next) => {
   }
 };
 
-// Callback servant à authentifier un user
+/**
+ * @function
+ * @description Authentifie un utilisateur.
+ * @route POST /users/authenticate
+ * @param {Object} req.body - Données pour l'authentification.
+ * @param {string} req.body.email - L'email de l'utilisateur.
+ * @param {string} req.body.password - Le mot de passe de l'utilisateur.
+ * @returns {string} Token JWT si l'authentification est réussie.
+ * @returns {string} Message d'erreur si l'utilisateur ou le mot de passe est incorrect.
+ */
 exports.authenticate = async (req, res) => {
   const { email, password } = req.body;
-
   try {
     let user = await User.findOne({ email });
     if (!user)
@@ -111,7 +152,6 @@ exports.authenticate = async (req, res) => {
     const isMatch = await bcrypt.compare(password, user.password);
     if (!isMatch)
       return res.status(403).json({ message: "Mot de passe incorrect" });
-
     // Génération du token JWT
     const token = jwt.sign(
       {
@@ -124,8 +164,6 @@ exports.authenticate = async (req, res) => {
       process.env.SECRET_KEY,
       { expiresIn: "24h" }
     );
-
-    console.log("Token généré :", token); // 🔍 Vérifie si le token est bien généré
     res.status(200).json({ token }); // Renvoie le token au client
   } catch (error) {
     res.status(500).json({ message: "Erreur serveur" });

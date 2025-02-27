@@ -1,6 +1,11 @@
 const Catway = require("../models/catway");
 
-// Callback récupérant tous les catways
+/**
+ * @function
+ * @description Récupère tous les catways depuis la base de données.
+ * @route GET /catways
+ * @returns {Array} Liste des catways.
+ */
 exports.getAll = async (req, res, next) => {
   try {
     let catways = await Catway.find();
@@ -10,7 +15,14 @@ exports.getAll = async (req, res, next) => {
   }
 };
 
-// Callback récupérant un catway par son Id
+/**
+ * @function
+ * @description Récupère un catway spécifique par son identifiant.
+ * @route GET /catways/:id
+ * @param {string} req.params.id - L'ID du catway à récupérer.
+ * @returns {Object} Détails du catway si trouvé.
+ * @returns {string} Message d'erreur si catway non trouvé.
+ */
 exports.getById = async (req, res, next) => {
   const id = req.params.id;
   try {
@@ -24,7 +36,16 @@ exports.getById = async (req, res, next) => {
   }
 };
 
-// Callback permettant l'ajout d'un catway
+/**
+ * @function
+ * @description Ajoute un nouveau catway à la base de données.
+ * @route POST /catways
+ * @param {Object} req.body - Données du catway à ajouter.
+ * @param {string} req.body.catwayNumber - Le numéro du catway.
+ * @param {string} req.body.type - Le type de catway.
+ * @param {string} req.body.catwayState - L'état du catway.
+ * @returns {Object} Message de succès ou d'erreur après l'ajout.
+ */
 exports.add = async (req, res, next) => {
   const temp = {
     catwayNumber: req.body.catwayNumber,
@@ -41,12 +62,21 @@ exports.add = async (req, res, next) => {
   }
 };
 
-// Callback permettant de mettre à jour un catway (PUT)
+/**
+ * @function
+ * @description Met à jour les informations d'un catway spécifié par son identifiant.
+ * @route PUT /catways/:id
+ * @param {string} req.params.id - L'ID du catway à mettre à jour.
+ * @param {Object} req.body - Données à mettre à jour.
+ * @param {string} req.body.catwayState - L'état du catway à mettre à jour.
+ * @returns {Object} Le catway mis à jour.
+ * @returns {string} Message d'erreur si le catway n'est pas trouvé.
+ */
 exports.update = async (req, res, next) => {
   try {
     const updatedCatway = await Catway.findByIdAndUpdate(
-      req.params.id, // Récupère l'id du catway à modifier
-      { catwayState: req.body.catwayState }, // Met à jour le champ catwayState
+      req.params.id,
+      { catwayState: req.body.catwayState },
       { new: true } // Renvoie le catway mis à jour et remplace l'ancien
     );
     // Si le catway n'est pas trouvé
@@ -70,7 +100,15 @@ exports.update = async (req, res, next) => {
   }
 };
 
-// Callback permettant de mettre à jour partiellement un catway (PATCH)
+/**
+ * @function
+ * @description Met à jour partiellement un catway spécifié par son identifiant.
+ * @route PATCH /catways/:id
+ * @param {string} req.params.id - L'ID du catway à mettre à jour partiellement.
+ * @param {Object} req.body - Données à mettre à jour partiellement.
+ * @returns {Object} Le catway mis à jour.
+ * @returns {string} Message d'erreur si catway non trouvé.
+ */
 exports.partialUpdate = async (req, res, next) => {
   const id = req.params.id;
   try {
@@ -84,7 +122,14 @@ exports.partialUpdate = async (req, res, next) => {
   }
 };
 
-//Callback permettant de supprimer un catway
+/**
+ * @function
+ * @description Supprime un catway spécifié par son identifiant.
+ * @route DELETE /catways/:id
+ * @param {string} req.params.id - L'ID du catway à supprimer.
+ * @returns {string} Message de succès si le catway a été supprimé.
+ * @returns {string} Message d'erreur si le catway n'est pas trouvé.
+ */
 exports.delete = async (req, res, next) => {
   const id = req.params.id;
   try {

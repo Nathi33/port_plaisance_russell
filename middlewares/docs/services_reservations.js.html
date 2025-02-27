@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: services/reservations.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: services/reservations.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>const Reservations = require("../models/reservation");
+const Catway = require("../models/catway");
+
+/**
+ * @function
+ * @description Récupère toutes les réservations pour un catway spécifique.
+ * @route GET /catways/:catwayId/reservations
+ * @param {string} req.params.catwayId - L'ID du catway pour lequel récupérer les réservations.
+ * @returns {Array} Liste des réservations associées au catway.
+ * @returns {string} Message d'erreur si le catway n'est pas trouvé.
+ */
+exports.getAllByCatway = async (req, res, next) => {
+  const catwayId = req.params.catwayId;
+  try {
+    let catway = await Catway.findById(catwayId);
+    if (!catway) {
+      return res.status(404).json({ message: "catway_not_found" });
+    }
+    let reservations = await Reservations.find({
+      catwayNumber: catway.catwayNumber,
+    });
+    return res.status(200).json(reservations);
+  } catch (error) {
+    return res.status(500).json(error);
+  }
+};
+
+/**
+ * @function
+ * @description Récupère une réservation spécifique pour un catway.
+ * @route GET /catways/:catwayNumber/reservations/:reservationId
+ * @param {string} req.params.reservationId - L'ID de la réservation à récupérer.
+ * @param {string} req.params.catwayNumber - Le numéro du catway associé à la réservation.
+ * @returns {Object} Détails de la réservation si trouvée.
+ * @returns {string} Message d'erreur si la réservation n'est pas trouvée.
+ */
+exports.getById = async (req, res, next) => {
+  const { reservationId, catwayNumber } = req.params;
+  try {
+    const reservation = await Reservations.findOne({
+      _id: reservationId,
+      catwayNumber: catwayNumber,
+    });
+    if (!reservation) {
+      return res.status(404).send("Réservation non trouvée");
+    }
+    res.render("reservations/delete_reservations", {
+      title: "Annuler une réservation",
+      reservation: reservation,
+    });
+  } catch (error) {
+    console.error("Erreur lors de la récupération de la réservation", error);
+    return res.status(500).json(error);
+  }
+};
+
+/**
+ * @function
+ * @description Ajoute une nouvelle réservation pour un catway.
+ * @route POST /catways/:catwayId/reservations
+ * @param {string} req.params.catwayId - L'ID du catway pour lequel ajouter une réservation.
+ * @param {Object} req.body - Données de la réservation à créer.
+ * @param {string} req.body.clientName - Le nom du client.
+ * @param {string} req.body.boatName - Le nom du bateau.
+ * @param {Date} req.body.checkIn - La date d'arrivée.
+ * @param {Date} req.body.checkOut - La date de départ.
+ * @returns {Object} Message de succès ou d'erreur après l'ajout de la réservation.
+ */
+exports.add = async (req, res, next) => {
+  // Récupère l'ID depuis l'URL ou le corps de la requête si l'ID n'est pas dans l'URL
+  const catwayId = req.params.catwayId || req.body.catwayNumber;
+  if (!catwayId) {
+    return res.status(400).json({ message: "Aucun ID de catway fourni." });
+  }
+  try {
+    let catway = await Catway.findById(catwayId);
+    if (!catway) {
+      return res.status(404).json({ message: "Catway non trouvé !" });
+    }
+    const temp = {
+      catwayNumber: catway.catwayNumber,
+      clientName: req.body.clientName,
+      boatName: req.body.boatName,
+      checkIn: req.body.checkIn,
+      checkOut: req.body.checkOut,
+    };
+    let reservation = await Reservations.create(temp);
+    req.flash("success", "La réservation a été créée avec succès !");
+    res.status(302);
+    return res.redirect("/list_reservations");
+  } catch (error) {
+    console.error("Erreur lors de la création de la réservation", error);
+    req.flash(
+      "error",
+      "Une erreur s'est produite lors de la création de la réservation"
+    );
+    res.status(500);
+    return res.redirect("/create_reservation");
+  }
+};
+
+/**
+ * @function
+ * @description Supprime une réservation spécifiée pour un catway.
+ * @route DELETE /catways/:catwayNumber/reservations/:reservationId
+ * @param {string} req.params.catwayNumber - Le numéro du catway associé à la réservation.
+ * @param {string} req.params.reservationId - L'ID de la réservation à supprimer.
+ * @returns {Object} Message de succès si la réservation a été supprimée.
+ * @returns {string} Message d'erreur si la réservation n'est pas trouvée.
+ */
+exports.delete = async (req, res, next) => {
+  const { catwayNumber, reservationId } = req.params;
+  try {
+    const reservation = await Reservations.findOne({
+      _id: reservationId,
+      catwayNumber: catwayNumber,
+    });
+    if (!reservation) {
+      return res.status(404).json({ message: "reservation_not_found" });
+    }
+
+    await Reservations.findByIdAndDelete(reservationId);
+    req.flash("success", "Réservation supprimée avec succès !");
+    res.status(302).redirect("/list_reservations");
+  } catch (error) {
+    console.error("Erreur suppression réservation", error);
+    req.flash("error", "Erreur lors de la suppression de la réservation");
+    return res.redirect("/list_reservations");
+  }
+};
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Global</h3><ul><li><a href="global.html#add">add</a></li><li><a href="global.html#authenticate">authenticate</a></li><li><a href="global.html#boatName">boatName</a></li><li><a href="global.html#catwayNumber">catwayNumber</a></li><li><a href="global.html#catwayState">catwayState</a></li><li><a href="global.html#checkIn">checkIn</a></li><li><a href="global.html#checkOut">checkOut</a></li><li><a href="global.html#clientName">clientName</a></li><li><a href="global.html#delete">delete</a></li><li><a href="global.html#email">email</a></li><li><a href="global.html#firstname">firstname</a></li><li><a href="global.html#getAll">getAll</a></li><li><a href="global.html#getAllByCatway">getAllByCatway</a></li><li><a href="global.html#getById">getById</a></li><li><a href="global.html#hashPassword">hashPassword</a></li><li><a href="global.html#name">name</a></li><li><a href="global.html#partialUpdate">partialUpdate</a></li><li><a href="global.html#password">password</a></li><li><a href="global.html#timestamps">timestamps</a></li><li><a href="global.html#type">type</a></li><li><a href="global.html#update">update</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.4</a> on Wed Feb 26 2025 12:57:15 GMT+0100 (heure normale d’Europe centrale)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>
