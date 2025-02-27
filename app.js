@@ -34,6 +34,7 @@ app.use(methodOverride("_method"));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true })); // Permet de récupérer les données d'un formulaire
 app.use(cookieParser());
+app.use("/docs", express.static("docs"));
 
 // Ajout du répertoire views
 app.set("views", path.join(__dirname, "views"));

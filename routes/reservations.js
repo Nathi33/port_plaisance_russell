@@ -5,20 +5,46 @@ const reservationService = require("../services/reservations");
 
 const auth = require("../middlewares/auth");
 
-// Routes protégées avec JWT
-router.get("/:catwayId/reservations", auth, reservationService.getAllByCatway); // Route pour lire toutes les réservations pour un catway
+/**
+ * @route GET /:catwayId/reservations
+ * @desc Récupère toutes les réservations pour un catway spécifique.
+ * @param {string} catwayId - L'ID du catway pour lequel récupérer les réservations.
+ * @access Protégé (requiert un token JWT d'authentification)
+ */
+router.get("/:catwayId/reservations", auth, reservationService.getAllByCatway);
 
-router.post("/:catwayId/reservations", auth, reservationService.add); // Route pour ajouter une réservation pour un catway
+/**
+ * @route POST /:catwayId/reservations
+ * @desc Crée une nouvelle réservation pour un catway spécifique.
+ * @param {string} catwayId - L'ID du catway pour lequel ajouter une réservation.
+ * @body {object} reservation - Données de la réservation à ajouter.
+ * @access Protégé (requiert un token JWT d'authentification)
+ */
+router.post("/:catwayId/reservations", auth, reservationService.add);
+
+/**
+ * @route DELETE /:catwayNumber/reservations/:reservationId
+ * @desc Supprime une réservation pour un catway spécifique.
+ * @param {string} catwayNumber - Le numéro du catway associé à la réservation.
+ * @param {string} reservationId - L'ID de la réservation à supprimer.
+ * @access Protégé (requiert un token JWT d'authentification)
+ */
 router.delete(
   "/:catwayNumber/reservations/:reservationId",
   auth,
   reservationService.delete
-); // Route pour supprimer une réservation pour un catway
+);
 
-// Routes publiques
+/**
+ * @route GET /:catwayId/reservations/:reservationId
+ * @desc Récupère les détails d'une réservation spécifique pour un catway.
+ * @param {string} catwayId - L'ID du catway.
+ * @param {string} reservationId - L'ID de la réservation à récupérer.
+ * @access Public
+ */
 router.get(
   "/:catwayId/reservations/:reservationId",
   reservationService.getById
-); // Route pour lire le détail d'une réservation pour un catway
+);
 
 module.exports = router;

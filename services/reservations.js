@@ -1,7 +1,14 @@
 const Reservations = require("../models/reservation");
 const Catway = require("../models/catway");
 
-// Callback permettant de récupérer toutes les réservations pour un catway spécifique
+/**
+ * @function
+ * @description Récupère toutes les réservations pour un catway spécifique.
+ * @route GET /catways/:catwayId/reservations
+ * @param {string} req.params.catwayId - L'ID du catway pour lequel récupérer les réservations.
+ * @returns {Array} Liste des réservations associées au catway.
+ * @returns {string} Message d'erreur si le catway n'est pas trouvé.
+ */
 exports.getAllByCatway = async (req, res, next) => {
   const catwayId = req.params.catwayId;
   try {
@@ -18,7 +25,15 @@ exports.getAllByCatway = async (req, res, next) => {
   }
 };
 
-// Callback permettant de récupérer une réservation spécifique pour un catway
+/**
+ * @function
+ * @description Récupère une réservation spécifique pour un catway.
+ * @route GET /catways/:catwayNumber/reservations/:reservationId
+ * @param {string} req.params.reservationId - L'ID de la réservation à récupérer.
+ * @param {string} req.params.catwayNumber - Le numéro du catway associé à la réservation.
+ * @returns {Object} Détails de la réservation si trouvée.
+ * @returns {string} Message d'erreur si la réservation n'est pas trouvée.
+ */
 exports.getById = async (req, res, next) => {
   const { reservationId, catwayNumber } = req.params;
   try {
@@ -39,7 +54,18 @@ exports.getById = async (req, res, next) => {
   }
 };
 
-// Callback permettant d'ajouter une réservation pour un catway
+/**
+ * @function
+ * @description Ajoute une nouvelle réservation pour un catway.
+ * @route POST /catways/:catwayId/reservations
+ * @param {string} req.params.catwayId - L'ID du catway pour lequel ajouter une réservation.
+ * @param {Object} req.body - Données de la réservation à créer.
+ * @param {string} req.body.clientName - Le nom du client.
+ * @param {string} req.body.boatName - Le nom du bateau.
+ * @param {Date} req.body.checkIn - La date d'arrivée.
+ * @param {Date} req.body.checkOut - La date de départ.
+ * @returns {Object} Message de succès ou d'erreur après l'ajout de la réservation.
+ */
 exports.add = async (req, res, next) => {
   // Récupère l'ID depuis l'URL ou le corps de la requête si l'ID n'est pas dans l'URL
   const catwayId = req.params.catwayId || req.body.catwayNumber;
@@ -73,7 +99,15 @@ exports.add = async (req, res, next) => {
   }
 };
 
-// Callback permettant de supprimer une réservation
+/**
+ * @function
+ * @description Supprime une réservation spécifiée pour un catway.
+ * @route DELETE /catways/:catwayNumber/reservations/:reservationId
+ * @param {string} req.params.catwayNumber - Le numéro du catway associé à la réservation.
+ * @param {string} req.params.reservationId - L'ID de la réservation à supprimer.
+ * @returns {Object} Message de succès si la réservation a été supprimée.
+ * @returns {string} Message d'erreur si la réservation n'est pas trouvée.
+ */
 exports.delete = async (req, res, next) => {
   const { catwayNumber, reservationId } = req.params;
   try {
