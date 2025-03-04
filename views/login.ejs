@@ -6,6 +6,7 @@
     <title>Connexion</title>
   </head>
   <body>
+    <button><a href="/">Retour</a></button>
     <h2>Connexion</h2>
     <form id="loginForm">
       <label for="email">Adresse email</label>
@@ -20,7 +21,6 @@
         .getElementById("loginForm")
         .addEventListener("submit", async (event) => {
           event.preventDefault();
-          console.log("Formulaire soumis");
 
           const email = document.getElementById("email").value;
           const password = document.getElementById("password").value;
@@ -35,7 +35,6 @@
 
             if (response.ok) {
               // Si le serveur envoie le token dans un cookie, pas besoin de le stocker dans le localStorage
-              console.log("Authentification réussie !");
               window.location.href = "/dashboard"; // Redirige vers la page dashboard
             } else {
               const data = await response.json();

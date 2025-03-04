@@ -89,37 +89,6 @@ const User = new Schema(
 /**
  * Middleware exécuté avant l'enregistrement d'un utilisateur.
  * Si le mot de passe est modifié, il sera haché avec bcrypt avant d'être sauvegardé dans la base de données.
- *
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
-
-
-
-
-
-
-
-
-
-
-
-
  * @function
  * @name hashPassword
  */

@@ -3,10 +3,10 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
-    "start": "npm run test && env-cmd -f ./env/.env nodemon ./bin/www",
+    "start": "env-cmd -f ./env/.env nodemon ./bin/www",
     "dev": "npm run test && env-cmd -f ./env/.env.dev nodemon ./bin/www",
     "prod": "npm run test && env-cmd -f ./env/.env.prod nodemon ./bin/www",
-    "test": "mocha",
+    "test": "env-cmd -f ./env/.env mocha",
     "docs": "jsdoc -c jsdoc.json"
   },
   "dependencies": {

@@ -284,11 +284,17 @@ describe("catways", function () {
         json: sinon.stub(),
       };
 
+      // Capture temporairement console.error pour éviter d'afficher l'erreur
+      const consoleErrorStub = sinon.stub(console, "error");
+
       await catways.update(req, res);
 
       // Vérifie que le statut 500 et le message JSON sont bien envoyés
       sinon.assert.calledWith(res.status, 500);
       sinon.assert.calledWith(res.json, { message: "Erreur serveur" });
+
+      // Restaure console.error après le test
+      consoleErrorStub.restore();
     });
   });
 });
@@ -364,6 +370,9 @@ describe("catways", function () {
         redirect: sinon.spy(),
       };
 
+      // Capture temporairement console.error pour éviter d'afficher l'erreur
+      const consoleErrorStub = sinon.stub(console, "error");
+
       await catways.delete(req, res);
 
       // Vérifie que la redirection s'effectue vers "/delete_catway" en cas d'erreur
@@ -375,6 +384,9 @@ describe("catways", function () {
         "error",
         "Une erreur s'est produite lors de la suppression du catway"
       );
+
+      // Restaure console.error après le test
+      consoleErrorStub.restore();
     });
   });
 });
