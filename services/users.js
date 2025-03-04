@@ -43,6 +43,7 @@ exports.add = async (req, res, next) => {
     if (existingUser) {
       req.flash("error", "Cet utilisateur existe déjà !");
       return res.redirect("/registration");
+      // return res.status(400).json({ message: "Cet utilisateur existe déjà !" });
     }
     // Création du nouvel utilisateur
     const newUser = new User({
@@ -54,9 +55,13 @@ exports.add = async (req, res, next) => {
     await newUser.save();
     req.flash("success", "L'utilisateur a été créé avec succès !");
     res.redirect("/registration");
+    // res.status(201).json({ message: "Utilisateur créé avec succès !" });
   } catch (error) {
     req.flash("error", "Erreur lors de la création de l'utilisateur !");
     res.redirect("/registration");
+    // res
+    //   .status(500)
+    //   .json({ message: "Erreur lors de la création de l'utilisateur !" });
   }
 };
 

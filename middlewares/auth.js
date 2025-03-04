@@ -19,7 +19,6 @@ const SECRET_KEY = process.env.SECRET_KEY || "supersecretkey";
  */
 module.exports = (req, res, next) => {
   const token = req.cookies.jwtToken; // Récupère le token JWT stocké dans le cookie
-  console.log("Token reçu dans middleware :", req.cookies.jwtToken);
 
   if (!token) {
     return res

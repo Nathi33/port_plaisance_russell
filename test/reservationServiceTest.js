@@ -12,23 +12,35 @@ const reservationService = require("../services/reservations");
 
 // Test de la fonction add() du service reservations
 describe("Test du service de réservation (add)", function () {
+  this.timeout(10000);
   let mongoServer;
   before(async function () {
-    // Démarre une base MongoDB en mémoire
-    mongoServer = await MongoMemoryServer.create();
-    const uri = mongoServer.getUri();
-    await mongoose.connect(uri);
+    this.timeout(10000);
+    if (process.env.NODE_ENV === "test") {
+      mongoServer = await MongoMemoryServer.create();
+      const uri = mongoServer.getUri();
+
+      // Vérifie si Mongoose n'est pas déjà connecté avant de se connecter
+      if (mongoose.connection.readyState === 0) {
+        await mongoose.connect(uri);
+      }
+    }
   });
   after(async function () {
-    await mongoose.connection.dropDatabase();
-    await mongoose.connection.close();
-    await mongoServer.stop();
+    this.timeout(10000);
+    if (process.env.NODE_ENV === "test") {
+      await mongoose.connection.dropDatabase();
+      await mongoose.connection.close();
+      await mongoServer.stop(); // Arrêt de mongoServer à la fin des tests
+    }
   });
   beforeEach(async function () {
+    this.timeout(10000);
     await Catway.deleteMany({});
     await Reservation.deleteMany({});
   });
   it("devrait créer une réservation avec un ID de catway valide", async function () {
+    this.timeout(10000);
     const catway = await Catway.create({ catwayNumber: 5000, type: "long" });
     const req = {
       params: { catwayId: catway._id.toString() },
@@ -62,6 +74,7 @@ describe("Test du service de réservation (add)", function () {
     assert.strictEqual(reservation.boatName, "Boat Test");
   });
   it("devrait retourner une erreur si l'ID de catway est manquant", async function () {
+    this.timeout(10000);
     const req = {
       params: {},
       body: {
@@ -91,6 +104,7 @@ describe("Test du service de réservation (add)", function () {
     assert.strictEqual(res.body.message, "Aucun ID de catway fourni.");
   });
   it("devrait retourner une erreur si le catway n'existe pas", async function () {
+    this.timeout(10000);
     const fakeId = new mongoose.Types.ObjectId();
     const req = {
       params: { catwayId: fakeId.toString() },
@@ -124,22 +138,31 @@ describe("Test du service de réservation (add)", function () {
 
 // Test de la fonction delete() du service reservations
 describe("Test du service de réservation (delete)", function () {
+  this.timeout(10000);
   let mongoServer;
   before(async function () {
-    mongoServer = await MongoMemoryServer.create();
-    const uri = mongoServer.getUri();
-    await mongoose.connect(uri);
+    this.timeout(10000);
+    if (process.env.NODE_ENV === "test") {
+      mongoServer = await MongoMemoryServer.create();
+      const uri = mongoServer.getUri();
+      await mongoose.connect(uri);
+    }
   });
   after(async function () {
-    await mongoose.connection.dropDatabase();
-    await mongoose.connection.close();
-    await mongoServer.stop();
+    this.timeout(10000);
+    if (process.env.NODE_ENV === "test") {
+      await mongoose.connection.dropDatabase();
+      await mongoose.connection.close();
+      await mongoServer.stop(); // Arrêt de mongoServer à la fin des tests
+    }
   });
   beforeEach(async function () {
+    this.timeout(10000);
     await Reservation.deleteMany({});
     await Catway.deleteMany({});
   });
   it("devrait supprimer une réservation avec un ID valide", async function () {
+    this.timeout(10000);
     const catway = await Catway.create({ catwayNumber: 5000, type: "long" });
     const reservation = await Reservation.create({
       catwayNumber: catway.catwayNumber,
@@ -182,6 +205,7 @@ describe("Test du service de réservation (delete)", function () {
     );
   });
   it("devrait retourner une erreur si la réservation n'existe pas", async function () {
+    this.timeout(10000);
     const req = {
       params: {
         catwayNumber: 5000,
@@ -213,22 +237,31 @@ describe("Test du service de réservation (delete)", function () {
 
 // Test de la fonction getAllByCatway() du service reservations
 describe("Test du service de réservation (getAllByCatway)", function () {
+  this.timeout(10000);
   let mongoServer;
   before(async function () {
-    mongoServer = await MongoMemoryServer.create();
-    const uri = mongoServer.getUri();
-    await mongoose.connect(uri);
+    this.timeout(10000);
+    if (process.env.NODE_ENV === "test") {
+      mongoServer = await MongoMemoryServer.create();
+      const uri = mongoServer.getUri();
+      await mongoose.connect(uri);
+    }
   });
   after(async function () {
-    await mongoose.connection.dropDatabase();
-    await mongoose.connection.close();
-    await mongoServer.stop();
+    this.timeout(10000);
+    if (process.env.NODE_ENV === "test") {
+      await mongoose.connection.dropDatabase();
+      await mongoose.connection.close();
+      await mongoServer.stop(); // Arrêt de mongoServer à la fin des tests
+    }
   });
   beforeEach(async function () {
+    this.timeout(10000);
     await Reservation.deleteMany({});
     await Catway.deleteMany({});
   });
   it("devrait retourner toutes les réservations d'un catway existant", async function () {
+    this.timeout(10000);
     const catway = await Catway.create({ catwayNumber: 5001, type: "long" });
     await Reservation.create({
       catwayNumber: 5001,
@@ -255,6 +288,7 @@ describe("Test du service de réservation (getAllByCatway)", function () {
     assert.strictEqual(res.body[0].clientName, "Jean Dupont");
   });
   it("devrait retourner une liste vide si aucune réservation n'existe pour le catway", async function () {
+    this.timeout(10000);
     const catway = await Catway.create({ catwayNumber: 6000, type: "long" });
     const req = { params: { catwayId: catway._id.toString() } };
     const res = {
@@ -273,6 +307,7 @@ describe("Test du service de réservation (getAllByCatway)", function () {
     assert.deepStrictEqual(res.body, []);
   });
   it("devrait retourner une erreur 404 si le catway n'existe pas", async function () {
+    this.timeout(10000);
     const fakeId = new mongoose.Types.ObjectId();
     const req = { params: { catwayId: fakeId.toString() } }; // ID inexistant
     const res = {

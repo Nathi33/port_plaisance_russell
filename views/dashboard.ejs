@@ -19,27 +19,23 @@
     <% } %>
 
     <div style="display: flex; margin-bottom: 3rem">
-      <form method="POST" action="/users">
+      <form method="POST" action="/catways">
         <fieldset style="width: 38rem; margin-right: 3rem">
           <br />
-          <legend style="font-weight: bold">UTILISATEURS</legend>
+          <legend style="font-weight: bold">CATWAYS</legend>
           <fieldset>
-            <legend>Créer un membre</legend>
-            <a href="/registration">Formulaire d'inscription</a>
+            <legend>Liste des catways</legend>
+            <a href="/list_catways">Nos catways</a>
           </fieldset>
           <br />
           <fieldset>
-            <legend>Mettre à jour vos informations utilisateur</legend>
-            <a href="/update/<%= user._id %>">Formulaire de mise à jour</a>
-          </fieldset>
-          <br />
-          <fieldset>
-            <legend>Supprimer son profil utilisateur</legend>
-            <a href="/delete_member">Formulaire de suppression</a>
+            <legend>Enregistrer un catway</legend>
+            <a href="/create_catway">Formulaire de création</a>
           </fieldset>
           <br />
         </fieldset>
       </form>
+
       <form method="POST" action="/reservations">
         <fieldset style="width: 38rem">
           <br />
@@ -54,28 +50,26 @@
             <a href="/create_reservations">Formulaire de réservation</a>
           </fieldset>
           <br />
-          <fieldset>
-            <legend>Supprimer une réservation</legend>
-            <a href="/delete_reservations"
-              >Formulaire d'annulation de réservation</a
-            >
-          </fieldset>
-          <br />
         </fieldset>
       </form>
     </div>
-    <form method="POST" action="/catways">
+    <form method="POST" action="/users">
       <fieldset style="width: 38rem; margin-right: 3rem">
         <br />
-        <legend style="font-weight: bold">CATWAYS</legend>
+        <legend style="font-weight: bold">UTILISATEURS</legend>
         <fieldset>
-          <legend>Liste des catways</legend>
-          <a href="/list_catways">Nos catways</a>
+          <legend>Créer un membre</legend>
+          <a href="/registration">Formulaire d'inscription</a>
         </fieldset>
         <br />
         <fieldset>
-          <legend>Enregistrer un catway</legend>
-          <a href="/create_catway">Formulaire de création</a>
+          <legend>Mettre à jour vos informations utilisateur</legend>
+          <a href="/update/<%= user._id %>">Formulaire de mise à jour</a>
+        </fieldset>
+        <br />
+        <fieldset>
+          <legend>Supprimer son profil utilisateur</legend>
+          <a href="/delete_member">Formulaire de suppression</a>
         </fieldset>
         <br />
       </fieldset>

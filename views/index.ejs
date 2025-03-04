@@ -6,19 +6,38 @@
     <title>Accueil</title>
   </head>
   <body>
-    <h1>
-      Bienvenue sur la réservation en ligne de votre catway pour le port de
-      Plaisance Russell
-    </h1>
-    <nav>
+    <header
+      style="
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        margin-bottom: 5rem;
+      "
+    >
+      <h1 style="text-decoration: underline">Port de Plaisance Russell</h1>
+      <h2>Bienvenue sur notre site de réservation en ligne</h2>
+    </header>
+
+    <section style="margin-bottom: 3rem">
+      <h3>Notre site vous permet de gérer :</h3>
       <ul>
-        <li>
-          <a href="/login">Connexion</a>
-        </li>
-        <li>
-          <a href="/docs">Documentation de l'API</a>
-        </li>
+        <li>les places de port (création, mise à jour et suppression),</li>
+        <li>les réservations de places de port,</li>
+        <li>ainsi que la gestion de nouveau membre utilisateur.</li>
       </ul>
-    </nav>
+    </section>
+
+    <section style="margin-bottom: 3rem">
+      <h3>Vous pouvez vous connecter en cliquant sur le lien ci-dessous :</h3>
+      <a href="/login">Connexion</a>
+    </section>
+
+    <section>
+      <h3>
+        Vous pouvez consulter la documentation de l'API en cliquant sur le lien
+        ci-dessous :
+      </h3>
+      <a href="/docs">Documentation de l'API</a>
+    </section>
   </body>
 </html>
