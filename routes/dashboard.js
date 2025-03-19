@@ -4,16 +4,64 @@ const auth = require("../middlewares/auth");
 const User = require("../models/user");
 
 /**
- * Route pour afficher le dashboard d'un utilisateur.
- *
- * Cette route permet de récupérer les informations d'un utilisateur spécifique en utilisant son ID.
- * L'utilisateur doit être authentifié via le middleware d'authentification JWT.
- *
- * @route GET /dashboard
- * @returns {Object} Vue du dashboard avec les informations de l'utilisateur,
- *                   le message de succès ou d'erreur le cas échéant.
- * @throws {Object} 401 - Si l'utilisateur n'est pas trouvé.
- * @throws {Object} 500 - Si une erreur serveur se produit.
+ * @swagger
+ * tags:
+ *   - name: Dashboard
+ *     description: Gestion du tableau de bord de l'utilisateur
+ */
+
+/**
+ * @swagger
+ * /dashboard:
+ *   get:
+ *     summary: "Obtenir les informations du tableau de bord de l'utilisateur"
+ *     tags:
+ *       - Dashboard
+ *     security:
+ *       - bearerAuth: []  # Assurez-vous que 'bearerAuth' est bien défini dans votre Swagger global
+ *     responses:
+ *       '200':
+ *         description: "Données du tableau de bord de l'utilisateur récupérées avec succès."
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 user:
+ *                   type: object
+ *                   properties:
+ *                     id:
+ *                       type: string
+ *                     name:
+ *                       type: string
+ *                     email:
+ *                       type: string
+ *                 successMessage:
+ *                   type: string
+ *                   description: "Message de succès, si disponible."
+ *                 errorMessage:
+ *                   type: string
+ *                   description: "Message d'erreur, si disponible."
+ *       '401':
+ *         description: "Utilisateur non trouvé ou authentification échouée."
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 error:
+ *                   type: string
+ *                   description: "Message d'erreur."
+ *       '500':
+ *         description: "Erreur serveur interne lors de la récupération de l'utilisateur."
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 error:
+ *                   type: string
+ *                   description: "Message d'erreur."
  */
 router.get("/", auth, async (req, res) => {
   try {

@@ -6,78 +6,206 @@ const catwayService = require("../services/catways");
 const auth = require("../middlewares/auth");
 
 /**
- * Route pour lire les informations de tous les catways.
- *
- * Cette route permet de récupérer toutes les informations sur les catways.
- * Elle est protégée par un middleware d'authentification JWT.
- *
- * @route GET /catways
- * @desc Récupère toutes les informations sur les catways.
- * @access Protégé (requiert un token JWT d'authentification)
- * @returns {Array} Liste de tous les catways.
+ * @swagger
+ * tags:
+ *   name: Catways
+ *   description: Gestion des catways
+ */
+
+/**
+ * @swagger
+ * /catways:
+ *   get:
+ *     summary: "Obtenir la liste de tous les catways"
+ *     tags: [Catways]
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       '200':
+ *         description: "Liste des catways récupérée avec succès."
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 type: object
+ *                 properties:
+ *                   id:
+ *                     type: string
+ *                   name:
+ *                     type: string
+ *                   description:
+ *                     type: string
+ *       '401':
+ *         description: "Non autorisé. L'utilisateur doit être authentifié."
+ *       '500':
+ *         description: "Erreur serveur interne."
  */
 router.get("/", auth, catwayService.getAll);
 
 /**
- * Route pour ajouter un catway.
- *
- * Cette route permet d'ajouter un nouveau catway dans la base de données.
- * Elle est protégée par un middleware d'authentification JWT.
- *
- * @route POST /catways/add
- * @desc Ajoute un nouveau catway dans la base de données.
- * @access Protégé (requiert un token JWT d'authentification)
- * @body {Object} catway - Données du catway à ajouter.
- * @returns {Object} Catway créé.
+ * @swagger
+ * /catways/add:
+ *   post:
+ *     summary: "Ajouter un nouveau catway"
+ *     tags: [Catways]
+ *     security:
+ *       - bearerAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               name:
+ *                 type: string
+ *                 description: "Nom du catway."
+ *               description:
+ *                 type: string
+ *                 description: "Description du catway."
+ *     responses:
+ *       '201':
+ *         description: "Catway ajouté avec succès."
+ *       '400':
+ *         description: "Requête invalide."
+ *       '401':
+ *         description: "Non autorisé. L'utilisateur doit être authentifié."
+ *       '500':
+ *         description: "Erreur serveur interne."
  */
 router.post("/add", auth, catwayService.add);
 
 /**
- * Route pour supprimer un catway.
- *
- * Cette route permet de supprimer un catway en fonction de son ID.
- * Elle est protégée par un middleware d'authentification JWT.
- *
- * @route DELETE /catways/:id
- * @desc Supprime un catway en fonction de son ID.
- * @access Protégé (requiert un token JWT d'authentification)
- * @param {string} id - L'ID du catway à supprimer.
+ * @swagger
+ * /catways/{id}:
+ *   delete:
+ *     summary: "Supprimer un catway par son ID"
+ *     tags: [Catways]
+ *     parameters:
+ *       - name: id
+ *         in: path
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: "ID du catway à supprimer."
+ *     responses:
+ *       '200':
+ *         description: "Catway supprimé avec succès."
+ *       '404':
+ *         description: "Catway non trouvé."
+ *       '500':
+ *         description: "Erreur serveur interne."
  */
 router.delete("/:id", auth, catwayService.delete);
 
 /**
- * Route pour lire les informations d'un catway spécifique.
- *
- * Cette route permet de récupérer les informations d'un catway à partir de son ID.
- * Elle est publique, c'est-à-dire accessible sans authentification.
- *
- * @route GET /catways/:id
- * @param {string} id - L'ID du catway à récupérer.
- * @returns {Object} Détails du catway.
+ * @swagger
+ * /catways/{id}:
+ *   get:
+ *     summary: "Obtenir un catway par son ID"
+ *     tags: [Catways]
+ *     parameters:
+ *       - name: id
+ *         in: path
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: "ID du catway à récupérer."
+ *     responses:
+ *       '200':
+ *         description: "Catway récupéré avec succès."
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 id:
+ *                   type: string
+ *                 name:
+ *                   type: string
+ *                 description:
+ *                   type: string
+ *       '404':
+ *         description: "Catway non trouvé."
+ *       '500':
+ *         description: "Erreur serveur interne."
  */
 router.get("/:id", catwayService.getById);
 
 /**
- * Route pour mettre à jour un catway.
- *
- * Cette route permet de mettre à jour les informations d'un catway spécifique à partir de son ID.
- * Elle est publique.
- *
- * @route PUT /catways/update_catway/:id
+ * @swagger
+ * /catways/update_catway/{id}:
+ *   put:
+ *     summary: "Mettre à jour un catway par son ID"
+ *     tags: [Catways]
+ *     parameters:
+ *       - name: id
+ *         in: path
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: "ID du catway à mettre à jour."
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               name:
+ *                 type: string
+ *                 description: "Nom du catway."
+ *               description:
+ *                 type: string
+ *                 description: "Description du catway."
+ *     responses:
+ *       '200':
+ *         description: "Catway mis à jour avec succès."
+ *       '400':
+ *         description: "Requête invalide."
+ *       '404':
+ *         description: "Catway non trouvé."
+ *       '500':
+ *         description: "Erreur serveur interne."
  */
 router.put("/update_catway/:id", catwayService.update);
 
 /**
- * Route pour mettre à jour partiellement un catway.
- *
- * Cette route permet de mettre à jour partiellement les informations d'un catway à partir de son ID.
- *
- * @route PATCH /catways/update_catway/:id
- * @desc Met à jour les informations d'un catway spécifique.
- * @access Public
- * @param {string} id - L'ID du catway à mettre à jour.
- * @body {Object} catway - Données à mettre à jour pour le catway.
- * @returns {Object} Catway mis à jour.
+ * @swagger
+ * /catways/partial_update_catway/{id}:
+ *   patch:
+ *     summary: "Mettre à jour partiellement un catway"
+ *     tags: [Catways]
+ *     parameters:
+ *       - name: id
+ *         in: path
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: "ID du catway à mettre à jour."
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               name:
+ *                 type: string
+ *                 description: "Nom du catway."
+ *               description:
+ *                 type: string
+ *                 description: "Description du catway."
+ *     responses:
+ *       '200':
+ *         description: "Catway partiellement mis à jour avec succès."
+ *       '400':
+ *         description: "Requête invalide."
+ *       '404':
+ *         description: "Catway non trouvé."
+ *       '500':
+ *         description: "Erreur serveur interne."
  */
 router.patch("/update_catway/:id", catwayService.partialUpdate);
 

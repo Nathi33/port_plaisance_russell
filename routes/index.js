@@ -13,39 +13,64 @@ const User = require("../models/user");
 const auth = require("../middlewares/auth");
 
 /**
- * Route pour afficher la page d'accueil.
- *
- * Cette route affiche la page principale du site avec le titre "Connexion".
- *
- * @route GET /
- * @returns {Object} Vue de la page d'accueil
+ * @swagger
+ * tags:
+ *   name: Index
+ *   description: Gestion des routes de la page d'accueil
+ */
+
+/**
+ * @swagger
+ * /:
+ *   get:
+ *     summary: Affiche la page d'accueil
+ *     tags: [Index]
+ *     responses:
+ *       200:
+ *         description: Vue de la page d'accueil
+ *       500:
+ *         description: Erreur serveur interne
  */
 router.get("/", async (req, res) => {
   res.render("index", { title: "Connexion" });
 });
 
 /**
- * Route pour afficher la page d'inscription des membres.
- *
- * Cette route affiche la page d'inscription accessible uniquement par un utilisateur authentifié.
- *
- * @route GET /registration
- * @returns {Object} Vue de la page d'inscription des membres
+ * @swagger
+ * /registration:
+ *   get:
+ *     summary: Affiche la page d'inscription des membres
+ *     tags: [Index]
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200:
+ *         description: Vue de la page d'inscription
+ *       500:
+ *         description: Erreur serveur interne
  */
 router.get("/registration", auth, async (req, res) => {
   res.render("users/registration", { title: "Inscription" });
 });
 
 /**
- * Route pour afficher la page de mise à jour d'un membre.
- *
- * Cette route permet à un administrateur de mettre à jour les informations d'un membre spécifique.
- * L'utilisateur est récupéré par son ID.
- *
- * @route GET /update/:id
- * @param {string} id - L'ID du membre à mettre à jour.
- * @returns {Object} Vue de la page de mise à jour des informations du membre
- * @throws {Object} 404 - Si l'utilisateur n'est pas trouvé.
+ * @swagger
+ * /update/{id}:
+ *   get:
+ *     summary: Affiche la page de mise à jour d'un membre
+ *     tags: [Index]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: L'ID du membre à mettre à jour.
+ *     responses:
+ *       200:
+ *         description: Vue de la page de mise à jour des informations du membre
+ *       404:
+ *         description: Utilisateur introuvable
  */
 router.get("/update/:id", async (req, res) => {
   try {
@@ -67,15 +92,20 @@ router.get("/update/:id", async (req, res) => {
 });
 
 /**
- * Route pour afficher la page de suppression d'un membre.
- *
- * Cette route permet de supprimer un membre du système.
- * L'utilisateur authentifié est récupéré et passé à la vue pour confirmation.
- *
- * @route GET /delete_member
- * @returns {Object} Vue de la page de suppression d'un membre
- * @throws {Object} 404 - Si l'utilisateur n'est pas trouvé
+ * @swagger
+ * /delete_member:
+ *   get:
+ *     summary: Affiche la page de suppression d'un membre
+ *     tags: [Index]
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200:
+ *         description: Vue de la page de suppression d'un membre
+ *       500:
+ *         description: Erreur serveur interne
  */
+
 router.get("/delete_member", auth, async (req, res) => {
   try {
     const user = await User.findById(req.user.userId).select("-password");
@@ -95,13 +125,18 @@ router.get("/delete_member", auth, async (req, res) => {
 });
 
 /**
- * Route pour afficher la liste des réservations.
- *
- * Cette route récupère toutes les réservations et les affiche dans une vue.
- *
- * @route GET /list_reservations
- * @returns {Object} Vue de la liste des réservations
- * @throws {Object} 500 - Si une erreur survient lors de la récupération des réservations
+ * @swagger
+ * /list_reservations:
+ *   get:
+ *     summary: Affiche la liste des réservations
+ *     tags: [Index]
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200:
+ *         description: Vue de la liste des réservations
+ *       500:
+ *         description: Erreur lors de la récupération des réservations
  */
 router.get("/list_reservations", auth, async (req, res) => {
   try {
@@ -118,14 +153,18 @@ router.get("/list_reservations", auth, async (req, res) => {
 });
 
 /**
- * Route pour afficher la page de création de réservation.
- *
- * Cette route permet à l'utilisateur d'effectuer une nouvelle réservation en affichant
- * les catways disponibles.
- *
- * @route GET /create_reservations
- * @returns {Object} Vue de la page de création de réservation avec les catways disponibles
- * @throws {Object} 500 - Si une erreur survient lors de la récupération des catways disponibles
+ * @swagger
+ * /create_reservations:
+ *   get:
+ *     summary: Affiche la page de création de réservation
+ *     tags: [Index]
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200:
+ *         description: Vue de la page de création de réservation
+ *       500:
+ *         description: Erreur lors de la récupération des catways disponibles
  */
 router.get("/create_reservations", auth, async (req, res) => {
   try {
@@ -152,15 +191,30 @@ router.get("/create_reservations", auth, async (req, res) => {
 });
 
 /**
- * Route pour afficher la page de suppression d'une réservation.
- *
- * Cette route permet à un utilisateur d'annuler une réservation existante.
- *
- * @route GET /reservations/delete_reservations/:id
- * @param {string} id - L'ID de la réservation à annuler.
- * @returns {Object} Vue de la page de suppression de réservation
- * @throws {Object} 404 - Si la réservation n'est pas trouvée
- * @throws {Object} 500 - En cas d'erreur serveur
+ * @swagger
+ * /reservations/delete_reservations/{id}:
+ *   get:
+ *     summary: "Annuler une réservation"
+ *     tags:
+ *       - Index
+ *     parameters:
+ *       - name: id
+ *         in: path
+ *         description: "ID de la réservation à annuler."
+ *         required: true
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: "Page de suppression de réservation affichée."
+ *         content:
+ *           text/html:
+ *             schema:
+ *               type: string
+ *       404:
+ *         description: "Réservation non trouvée."
+ *       500:
+ *         description: "Erreur lors de la récupération de la réservation."
  */
 router.get("/reservations/delete_reservations/:id", auth, async (req, res) => {
   const reservationId = req.params.id;
@@ -182,15 +236,30 @@ router.get("/reservations/delete_reservations/:id", auth, async (req, res) => {
 });
 
 /**
- * Route pour afficher les détails d'une réservation.
- *
- * Cette route permet d'afficher les détails complets d'une réservation à partir de son ID.
- *
- * @route GET /reservations/details_reservation/:id
- * @param {string} id - L'ID de la réservation à afficher.
- * @returns {Object} Vue des détails de la réservation
- * @throws {Object} 404 - Si la réservation n'est pas trouvée
- * @throws {Object} 500 - En cas d'erreur serveur
+ * @swagger
+ * /reservations/details_reservation/{id}:
+ *   get:
+ *     summary: "Voir les détails d'une réservation"
+ *     tags:
+ *       - Index
+ *     parameters:
+ *       - name: id
+ *         in: path
+ *         description: "ID de la réservation à afficher."
+ *         required: true
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: "Page avec les détails de la réservation affichée."
+ *         content:
+ *           text/html:
+ *             schema:
+ *               type: string
+ *       404:
+ *         description: "Réservation non trouvée."
+ *       500:
+ *         description: "Erreur lors de la récupération de la réservation."
  */
 router.get("/reservations/details_reservation/:id", async (req, res) => {
   try {
@@ -212,14 +281,23 @@ router.get("/reservations/details_reservation/:id", async (req, res) => {
 });
 
 /**
- * Route pour afficher la liste des catways.
- *
- * Cette route récupère et affiche tous les catways dans la vue.
- *
- * @route GET /list_catways
- * @returns {Object} Vue de la liste des catways
- * @throws {Object} 500 - En cas d'erreur lors de la récupération des catways
+ * @swagger
+ * /list_catways:
+ *   get:
+ *     summary: "Lister tous les catways"
+ *     tags:
+ *       - Index
+ *     responses:
+ *       200:
+ *         description: "Liste des catways affichée."
+ *         content:
+ *           text/html:
+ *             schema:
+ *               type: string
+ *       500:
+ *         description: "Erreur lors de la récupération de la liste des catways."
  */
+
 router.get("/list_catways", auth, async (req, res) => {
   try {
     const catways = await Catway.find();
@@ -235,10 +313,23 @@ router.get("/list_catways", auth, async (req, res) => {
 });
 
 /**
- * @route GET /create_catway
- * @desc Affiche le formulaire pour enregistrer un nouveau catway.
- * @access Protéger (requiert une authentification)
+ * @swagger
+ * /create_catway:
+ *   get:
+ *     summary: "Enregistrer un catway"
+ *     tags:
+ *       - Index
+ *     responses:
+ *       200:
+ *         description: "Page de création d'un catway affichée."
+ *         content:
+ *           text/html:
+ *             schema:
+ *               type: string
+ *       500:
+ *         description: "Erreur lors de la récupération de la page de création."
  */
+
 router.get("/create_catway", auth, async (req, res) => {
   res.render("catways/create_catway", {
     title: "Enregistrer un catway",
@@ -246,13 +337,32 @@ router.get("/create_catway", auth, async (req, res) => {
 });
 
 /**
- * @route GET /catways/update_catway/:id
- * @desc Affiche le formulaire pour mettre à jour un catway existant.
- * @param {string} id - L'ID du catway à mettre à jour
- * @access Public
- * @throws {404} Si le catway n'est pas trouvé
- * @throws {500} En cas d'erreur serveur lors de la récupération du catway
+ * @swagger
+ * /catways/update_catway/{id}:
+ *   get:
+ *     summary: "Mettre à jour un catway"
+ *     tags:
+ *       - Index
+ *     parameters:
+ *       - name: id
+ *         in: path
+ *         description: "ID du catway à mettre à jour."
+ *         required: true
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: "Page de mise à jour du catway affichée."
+ *         content:
+ *           text/html:
+ *             schema:
+ *               type: string
+ *       404:
+ *         description: "Catway non trouvé."
+ *       500:
+ *         description: "Erreur lors de la récupération du catway."
  */
+
 router.get("/catways/update_catway/:id", async (req, res) => {
   try {
     const catway = await Catway.findById(req.params.id);
@@ -269,13 +379,32 @@ router.get("/catways/update_catway/:id", async (req, res) => {
 });
 
 /**
- * @route GET /catways/delete_catway/:id
- * @desc Affiche la page de confirmation pour supprimer un catway.
- * @param {string} id - L'ID du catway à supprimer
- * @access Protéger (requiert une authentification)
- * @throws {404} Si le catway n'est pas trouvé
- * @throws {500} En cas d'erreur serveur lors de la récupération du catway
+ * @swagger
+ * /catways/delete_catway/{id}:
+ *   get:
+ *     summary: "Supprimer un catway"
+ *     tags:
+ *       - Index
+ *     parameters:
+ *       - name: id
+ *         in: path
+ *         description: "ID du catway à supprimer."
+ *         required: true
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: "Page de suppression du catway affichée."
+ *         content:
+ *           text/html:
+ *             schema:
+ *               type: string
+ *       404:
+ *         description: "Catway non trouvé."
+ *       500:
+ *         description: "Erreur lors de la récupération du catway."
  */
+
 router.get("/catways/delete_catway/:id", auth, async (req, res) => {
   try {
     const catway = await Catway.findById(req.params.id);
@@ -292,13 +421,32 @@ router.get("/catways/delete_catway/:id", auth, async (req, res) => {
 });
 
 /**
- * @route GET /catways/details_catway/:id
- * @desc Affiche les détails d'un catway spécifique.
- * @param {string} id - L'ID du catway dont afficher les détails
- * @access Public
- * @throws {404} Si le catway n'est pas trouvé
- * @throws {500} En cas d'erreur serveur lors de la récupération du catway
+ * @swagger
+ * /catways/details_catway/{id}:
+ *   get:
+ *     summary: "Voir les détails d'un catway"
+ *     tags:
+ *       - Index
+ *     parameters:
+ *       - name: id
+ *         in: path
+ *         description: "ID du catway à afficher."
+ *         required: true
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: "Page avec les détails du catway affichée."
+ *         content:
+ *           text/html:
+ *             schema:
+ *               type: string
+ *       404:
+ *         description: "Catway non trouvé."
+ *       500:
+ *         description: "Erreur lors de la récupération du catway."
  */
+
 router.get("/catways/details_catway/:id", async (req, res) => {
   try {
     const catway = await Catway.findById(req.params.id);

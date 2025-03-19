@@ -10,35 +10,71 @@ const cookieParser = require("cookie-parser");
 router.use(cookieParser());
 
 /**
- * Route pour afficher la page de connexion.
- *
- * Cette route sert à afficher la page de connexion lorsque l'utilisateur navigue vers la page de login.
- * Elle ne nécessite aucune authentification préalable.
- *
- * @route GET /login
- * @returns {Object} Page HTML de connexion.
+ * @swagger
+ * tags:
+ *   name: Auth
+ *   description: Gestion de l'authentification
+ */
+
+/**
+ * @swagger
+ * /login:
+ *   get:
+ *     summary: "Afficher la page de connexion"
+ *     tags:
+ *       - Auth
+ *     responses:
+ *       '200':
+ *         description: "Page de connexion rendue avec succès."
+ *       '500':
+ *         description: "Erreur serveur interne."
  */
 router.get("/", async (req, res) => {
   res.render("login", { title: "Connexion" });
 });
 
 /**
- * Route pour gérer la connexion d'un utilisateur et renvoyer un token JWT.
- *
- * Lorsqu'un utilisateur soumet son email et son mot de passe, cette route valide les informations.
- * Si elles sont correctes, un token JWT est généré et stocké dans un cookie.
- * Le token est valide pendant 1 heure et sert à authentifier l'utilisateur pour ses prochaines requêtes.
- *
- * @route POST /login
- * @param {string} email - L'email de l'utilisateur pour l'authentification.
- * @param {string} password - Le mot de passe de l'utilisateur pour l'authentification.
- * @returns {Object} Token JWT dans un cookie si l'authentification réussit, erreur 401 si elle échoue.
- * @throws {Object} 401 - Si l'email ou le mot de passe est incorrect.
+ * @swagger
+ * /login:
+ *   post:
+ *     summary: "Connexion de l'utilisateur"
+ *     tags:
+ *       - Auth
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               email:
+ *                 type: string
+ *                 description: "Adresse email de l'utilisateur."
+ *               password:
+ *                 type: string
+ *                 description: "Mot de passe de l'utilisateur."
+ *     responses:
+ *       '200':
+ *         description: "Utilisateur connecté avec succès et token JWT généré."
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: "Utilisateur connecté avec succès"
+ *                 token:
+ *                   type: string
+ *                   example: "jwt_token_here"
+ *       '401':
+ *         description: "Adresse email ou mot de passe incorrect."
+ *       '500':
+ *         description: "Erreur serveur interne."
  */
 router.post("/", async (req, res) => {
   const { email, password } = req.body;
   const user = await User.findOne({ email });
-
   if (!user || !bcrypt.compareSync(password, user.password)) {
     return res
       .status(401)
@@ -57,12 +93,17 @@ router.post("/", async (req, res) => {
 });
 
 /**
- * Route pour se déconnecter.
- *
- * Cette route permet de déconnecter un utilisateur en supprimant le cookie contenant le token JWT.
- *
- * @route POST /login/logout
- * @returns {Object} Redirection vers la page d'accueil après la déconnexion.
+ * @swagger
+ * /logout:
+ *   post:
+ *     summary: "Déconnexion de l'utilisateur"
+ *     tags:
+ *       - Auth
+ *     responses:
+ *       '200':
+ *         description: "Utilisateur déconnecté avec succès."
+ *       '500':
+ *         description: "Erreur serveur interne."
  */
 router.post("/logout", (req, res) => {
   res.clearCookie("jwtToken", {

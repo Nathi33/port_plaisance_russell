@@ -15,10 +15,17 @@ const catwayRoutes = require("./routes/catways");
 const reservationRoutes = require("./routes/reservations");
 const usersRoutes = require("./routes/users");
 
+const swaggerJsdoc = require("swagger-jsdoc");
+const swaggerUi = require("swagger-ui-express");
+const swaggerDocs = require("./swagger"); // Importation de Swagger
+
+console.log("Swagger Docs available at http://localhost:3000/api-docs");
+
 // Initialisation de la connexion à la base de données MongoDB
 mongodb.initClientDbConnection();
 
 const app = express();
+swaggerDocs(app); // Initialisation de Swagger
 
 // Configuration des CORS en acceptant toutes les origines et on récupère le token d'authentification côté client
 app.use(
